@@ -80,6 +80,101 @@ public class BoardDAO {
 			DBManager.close(conn, pstmt);
 		}
 	}
+	
+	public BoardVO selectOne(String num) {
+		BoardVO bVO = new BoardVO();
+		String sql = "select * from board where num = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				bVO.setNum(rs.getInt("num"));
+				bVO.setName(rs.getString("name"));
+				bVO.setEmail(rs.getString("email"));
+				bVO.setPass(rs.getString("pass"));
+				bVO.setTitle(rs.getString("title"));
+				bVO.setContent(rs.getString("content"));
+				bVO.setReadcount(rs.getInt("readcount"));
+				bVO.setWritedate(rs.getTimestamp("writedate"));
+				return bVO;
+			}
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		} finally {
+			DBManager.close(conn, pstmt);
+		}
+		return null;
+	}
+	
+	public void updateReadCount(String num) {
+		String sql = "update board set readcount = readcount + 1 where num = ? ";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, num);
+			pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBManager.close(conn, pstmt);
+		}
+	}
+	
+	public void updateBoard(BoardVO bVO) {
+		String sql = "update board "
+				+ "set name = ?, email = ?, pass = ?, title = ?, content = ? where num = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, bVO.getName());
+			pstmt.setString(2, bVO.getEmail());
+			pstmt.setString(3, bVO.getPass());
+			pstmt.setString(4, bVO.getTitle());
+			pstmt.setString(5, bVO.getContent());
+			pstmt.setInt(6, bVO.getNum());
+			
+			pstmt.executeUpdate();
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		} finally {
+			DBManager.close(conn, pstmt);
+		}
+	}
+	
+
+	public void deleteBoard(String num) {
+		String sql = "delete from board where num = ?";
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(num));
+			pstmt.executeUpdate();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBManager.close(conn, pstmt);
+		}
+	}
 }
 
 

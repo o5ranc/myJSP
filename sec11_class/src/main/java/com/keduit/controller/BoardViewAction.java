@@ -1,33 +1,36 @@
-package com.keduit.controller.action;
+package com.keduit.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.keduit.controller.action.Action;
 import com.keduit.dao.BoardDAO;
 import com.keduit.dto.BoardVO;
 
-public class BoardListAction implements Action {
-	// post 던, get이던 execute에서 모두 처리 한 상황
+public class BoardViewAction implements Action {
+
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// 상세조회화면으로
+		String url = "board/boardView.jsp";
 		
-		String url = "/board/boardList.jsp";
+		String num = request.getParameter("num");
 		
+		// db 접근 준비
 		BoardDAO bDAO = BoardDAO.getInstance();
-		List<BoardVO> boardList = bDAO.selectAllBoards();
+		bDAO.updateReadCount(num); // 게시글수 1 증가 시키기
+		BoardVO bVO = bDAO.selectOne(num); // 해당 게시글 상세 정보 가져오기
 		
-		request.setAttribute("boardList", boardList);
+		System.out.println("상세 결과 확인 : " + bVO);
+		request.setAttribute("board", bVO);
+		
+		//response.sendRedirect(url);
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(url);
 		dispatcher.forward(request, response);
-		
-		
-
 	}
-
 }

@@ -1,11 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>게시판 목록</title>
 <link rel="stylesheet" type="text/css" href="css/board.css">
+<script type="text/javascript" src="script/board.js"></script>
 </head>
 <body>
 <div id="wrap" align="center">
@@ -19,7 +22,15 @@
     <tr>
       <th>번호</th><th>제목</th><th>작성자</th><th>작성일</th><th>조회수</th>
     </tr>
-  
+  	<c:forEach var="board" items="${boardList}">
+  		<tr>
+  			<td><a href="BoardServlet?command=board_view&num=${board.num}">${board.num}</a></td>
+  			<td>${board.title}</td>
+  			<td>${board.name}</td>
+  			<td><fmt:formatDate value="${board.writedate}"></fmt:formatDate></td>
+  			<td>${board.readcount}</td>
+   		</tr>
+  	</c:forEach>
   
   </table>
 </div>
